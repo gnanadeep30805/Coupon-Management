@@ -40,5 +40,7 @@ Make sure you have installed:
 
 ---
 
-### Instructions of how to run are in 
+### Instructions of how to run are in RUN_INSTRUCTIONS.md file
+
+
 
