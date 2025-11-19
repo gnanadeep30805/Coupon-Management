@@ -40,8 +40,5 @@ Make sure you have installed:
 
 ---
 
-## 🟦 Backend Setup (Node + Express + PostgreSQL)
+### Instructions of how to run are in 
 
-### 1️⃣ Navigate to backend folder
-```bash
-cd backend
