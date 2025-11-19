@@ -40,7 +40,8 @@ Make sure you have installed:
 
 ---
 
-### Instructions of how to run are in RUN_INSTRUCTIONS.md file
+### Instructions to run the prjects are available in RUN_INSTRUCTIONS.md file
+
 
 
 
