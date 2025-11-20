@@ -1,21 +1,6 @@
-/* api.js
-   Small, robust API wrapper for the frontend.
-   - BASE_URL points to backend API root.
-   - request() handles JSON parse errors and throws readable Errors.
-   - get/post helpers simplify usage in pages.
-*/
-
-/* Change this if your backend is elsewhere. For example:
-  const BASE_URL = 'https://my-server.example.com/api';
-  You can also set a meta tag in your HTML: <meta name="api-base" content="https://api.example.com/api">
-*/
 const metaApiBase = (typeof document !== 'undefined') && document.querySelector('meta[name="api-base"]');
 const BASE_URL = window.__API_BASE__ || (metaApiBase && metaApiBase.content) || 'http://localhost:4000/api';
 
-/**
- * Low-level request helper.
- * Throws Error with message from server or generic message.
- */
 async function request(path, opts = {}) {
   const url = BASE_URL + path;
   const options = {
@@ -39,8 +24,6 @@ async function request(path, opts = {}) {
     try {
       return await doFetch(url);
     } catch (err) {
-      // If the request failed due to network (e.g. tunnel down) and the configured
-      // BASE_URL looks like a localtunnel (temporary), try a localhost fallback.
       const isNetworkErr = err instanceof TypeError || /failed to fetch/i.test(err.message || '');
       const looksLikeLocalTunnel = typeof BASE_URL === 'string' && /loca\.lt|localtunnel\.me|ngrok\.io/.test(BASE_URL);
 
