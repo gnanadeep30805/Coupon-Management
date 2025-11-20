@@ -1,6 +1,3 @@
-// models/couponsModel.js
-// Functions that talk to the database. Keep SQL in one place so it's testable.
-
 const db = require('../db');
 
 function normalizeCouponRow(row) {
@@ -20,10 +17,6 @@ function normalizeCouponRow(row) {
   return row;
 }
 
-/**
- * insertCoupon
- * Insert a coupon row and return the inserted row.
- */
 async function insertCoupon(coupon) {
   const {
     code, description, discountType, discountValue,
@@ -46,38 +39,22 @@ async function insertCoupon(coupon) {
   return normalizeCouponRow(result.rows[0]);
 }
 
-/**
- * getAllCoupons
- * Fetch all coupons. Simple listing for admin/demo pages.
- */
 async function getAllCoupons() {
   const result = await db.query('SELECT * FROM coupons ORDER BY created_at DESC');
   return result.rows.map(row => normalizeCouponRow(row));
 }
 
-/**
- * getCouponByCode
- * Retrieve a single coupon by code.
- */
 async function getCouponByCode(code) {
   const result = await db.query('SELECT * FROM coupons WHERE code = $1', [code]);
   return normalizeCouponRow(result.rows[0]);
 }
 
-/**
- * getUsageCount
- * Return how many times a user used a coupon (0 if none).
- */
 async function getUsageCount(userId, code) {
   const result = await db.query('SELECT usage_count FROM coupon_usage WHERE user_id = $1 AND coupon_code = $2', [userId, code]);
   if (!result.rows.length) return 0;
   return result.rows[0].usage_count;
 }
 
-/**
- * incrementUsage
- * Increase usage count for a (userId, code) pair. Insert if not exists.
- */
 async function incrementUsage(userId, code) {
   // Try updating first
   const updateRes = await db.query(`
