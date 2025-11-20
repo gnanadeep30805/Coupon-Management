@@ -1,6 +1,3 @@
-// routes/coupons.js
-// Define the API routes for coupons. Keep routes thin; controllers handle logic.
-
 const express = require('express');
 const router = express.Router();
 const ctrl = require('../controllers/couponsController');
