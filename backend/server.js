@@ -1,20 +1,12 @@
-// server.js
-// Entry point for the backend API server. Loads routes and error handlers.
-
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const path = require('path');
 
 const app = express();
 
 // Middlewares
-app.use(cors());             // Allow frontend to call
-app.use(express.json());     // Parse JSON bodies
-
-// Serve frontend static files from project `frontend/` so the app
-// can be accessed from the backend host/tunnel (useful for demo).
-app.use(express.static(path.join(__dirname, '..', 'frontend')));
+app.use(cors());             
+app.use(express.json());     
 
 // Routes
 const couponsRoutes = require('./routes/coupons');
@@ -23,7 +15,7 @@ app.use('/api/coupons', couponsRoutes);
 // Health check endpoint
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
-// Simple error handler - returns JSON with message
+// Simple error handler 
 app.use((err, req, res, next) => {
   console.error(err);
   if (res.headersSent) return next(err);
