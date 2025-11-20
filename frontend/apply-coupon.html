@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <title>Apply Coupon — Test</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="api-base" content="https://rare-baboons-knock.loca.lt/api">
+  <!-- Backend API base defaults to localhost in api.js; add a meta tag only when tunneling -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -83,7 +83,7 @@
 
   <script src="api.js"></script>
   <script>
-    // apply-coupon.js (inline)
+    // apply-coupon.js 
     const form = document.getElementById('applyForm');
     const resultDiv = document.getElementById('result');
     const cartEl = document.getElementById('cart');
