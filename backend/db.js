@@ -1,12 +1,7 @@
-// db.js
-// Small wrapper for pg Pool so other modules can run queries.
-// Keep DB connection logic in one place.
 
 const { Pool } = require('pg');
 require('dotenv').config();
 
-// If USE_MOCK_DB=true we provide a tiny in-memory mock DB that supports
-// the specific queries used by the app (listing, inserting coupons and usage).
 if (process.env.USE_MOCK_DB === 'true') {
   console.warn('Using in-memory MOCK DB (USE_MOCK_DB=true)');
 
@@ -16,14 +11,12 @@ if (process.env.USE_MOCK_DB === 'true') {
   const now = () => new Date().toISOString();
 
   function normalizeRow(row) {
-    // mimic DB row shape
     return Object.assign({ created_at: now(), updated_at: now() }, row);
   }
 
   async function query(text, params) {
     const t = (text || '').trim().toUpperCase();
 
-    // Simple routing based on SQL patterns used in models
     if (t.startsWith('SELECT * FROM COUPONS WHERE CODE')) {
       const code = params[0];
       const row = coupons.find(c => c.code === code) || null;
@@ -31,7 +24,6 @@ if (process.env.USE_MOCK_DB === 'true') {
     }
 
     if (t.startsWith('SELECT * FROM COUPONS ORDER BY')) {
-      // return copy sorted by created_at desc
       const rows = coupons.slice().sort((a, b) => (b.created_at > a.created_at ? 1 : -1));
       return { rows };
     }
@@ -67,7 +59,6 @@ if (process.env.USE_MOCK_DB === 'true') {
       return { rows: [rec] };
     }
 
-    // Fallback: return empty result to avoid crashes in unsupported queries
     console.warn('MOCK DB received unsupported query:', text);
     return { rows: [] };
   }
@@ -79,7 +70,6 @@ if (process.env.USE_MOCK_DB === 'true') {
   return;
 }
 
-// Real Postgres pool (used when not mocking)
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL
 });
