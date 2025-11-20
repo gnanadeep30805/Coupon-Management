@@ -17,6 +17,14 @@
         </div>
       </div>
       <div class="right">
+        <div class="user-chip">
+          <div class="avatar" id="userAvatar">CP</div>
+          <div class="col">
+            <strong id="currentUserName">Admin</strong>
+            <span id="currentUserEmail" class="hint" style="font-size:12px;"></span>
+          </div>
+        </div>
+        <button id="logoutBtn" class="btn btn-ghost small" type="button">Logout</button>
         <a class="btn btn-ghost small" href="create-coupon.html">Create Coupon</a>
         <a class="btn btn-ghost small" href="apply-coupon.html">Test Apply</a>
       </div>
@@ -57,8 +65,21 @@
     </div>
   </div>
 
+  <script src="auth.js"></script>
   <script src="api.js"></script>
   <script>
+    window.authStore.requireAuth('index.html');
+    const currentUser = window.authStore.getCurrentUser();
+    if (currentUser) {
+      document.getElementById('currentUserName').textContent = currentUser.name || 'Authenticated user';
+      document.getElementById('currentUserEmail').textContent = currentUser.email || '';
+      document.getElementById('userAvatar').textContent = (currentUser.name || currentUser.email || 'CP').slice(0, 2).toUpperCase();
+    }
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      window.authStore.logout();
+      window.location.href = 'index.html';
+    });
+
     // list-coupons.js (inline)
     const body = document.getElementById('couponsBody');
     const msg = document.getElementById('msg');
