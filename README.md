@@ -27,7 +27,7 @@ For a high-level system map, see [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 | Layer      | Tools                                |
 |-----------|---------------------------------------|
-| Frontend  | HTML5, CSS3, Vanilla JS (`frontend/`) |
+| Frontend  | HTML5, CSS3, JS (`frontend/`) |
 | Backend   | Node.js, Express.js, Joi (`backend/`) |
 | Database  | PostgreSQL (`schema.sql`)             |
 | Tooling   | npm, Postman, localtunnel (optional)  |
@@ -51,7 +51,7 @@ For a high-level system map, see [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 1. **Backend**
    ```powershell
-   cd "d:\web dev\coupon-system\backend"
+   cd "d:\coupon-system\backend"  (file-path)
    npm install
    ```
    - Create `.env` (see below).
@@ -59,7 +59,7 @@ For a high-level system map, see [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 2. **Frontend**
    ```powershell
-   cd "d:\web dev\coupon-system"
+   cd "d:\coupon-system"  (file-path)
    npx http-server frontend -p 3000
    ```
    - Open `http://localhost:3000/index.html`.
@@ -121,4 +121,5 @@ coupon-system/
 ## 📄 8. License
 
 MIT – customize as needed for your deployment.
+
 
