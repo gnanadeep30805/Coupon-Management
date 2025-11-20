@@ -5,7 +5,7 @@
 1. **Install dependencies**
 
     ```powershell
-    cd "d:\web dev\coupon-system\backend"
+    cd "d:\coupon-management\backend"  (file-path)
     npm.cmd install
     ```
 
@@ -21,7 +21,7 @@
 3. **Start the server**
 
     ```powershell
-    cd "d:\web dev\coupon-system\backend"
+    cd "d:\coupon-management\backend"  (file-path)
     npm.cmd start
     ```
 
@@ -53,7 +53,7 @@
 1. **Start a static server** (serves `frontend/` on port 3000)
 
     ```powershell
-    cd "d:\web dev\coupon-system"
+    cd "d:\coupon-management"  (file-path)
     npx http-server frontend -p 3000
     ```
 
@@ -83,3 +83,4 @@
 - For production or persistent testing, run Postgres (Docker or native), load `schema.sql`, and set `DATABASE_URL` accordingly.
 
 If you want, I can add these sections directly into `README.md` or create npm scripts for convenience.
+
