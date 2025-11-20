@@ -1,5 +1,3 @@
--- schema.sql
--- Tables for coupons and usage tracking.
 
 CREATE TABLE IF NOT EXISTS coupons (
   id SERIAL PRIMARY KEY,
