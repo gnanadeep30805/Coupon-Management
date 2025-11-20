@@ -4,12 +4,17 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+const path = require('path');
 
 const app = express();
 
 // Middlewares
 app.use(cors());             // Allow frontend to call
 app.use(express.json());     // Parse JSON bodies
+
+// Serve frontend static files from project `frontend/` so the app
+// can be accessed from the backend host/tunnel (useful for demo).
+app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
 // Routes
 const couponsRoutes = require('./routes/coupons');
