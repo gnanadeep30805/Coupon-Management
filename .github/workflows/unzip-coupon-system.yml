@@ -1,0 +1,27 @@
+name: Unzip Coupon System
+
+on:
+  workflow_dispatch:
+
+jobs:
+  extract-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download coupon-system.zip
+        run: curl -L -o coupon-system.zip "https://github.com/gnanadeep30805/Coupon-Management/raw/00474c8b7225f00b0bb8164d118d05d58b54c9c5/coupon-system.zip"
+
+      - name: Unzip
+        run: unzip -o coupon-system.zip
+
+      - name: Remove Zip File
+        run: rm coupon-system.zip
+
+      - name: Commit and push extracted files
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add coupon-system
+          git commit -m "Extracted coupon-system.zip contents"
+          git push
