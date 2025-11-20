@@ -1,14 +1,6 @@
-// controllers/couponsController.js
-// Controller keeps request handling logic readable and explains business rules in comments.
-
 const model = require('../models/couponsModel');
 const { createCouponSchema, bestCouponSchema } = require('../validators/validators');
 
-/**
- * createCoupon
- * Validate the request, insert coupon into DB,
- * and return the created coupon. Handle unique code gracefully.
- */
 async function createCoupon(req, res, next) {
   try {
     // Validate payload; Joi will enforce types and return helpful messages.
@@ -46,10 +38,6 @@ async function createCoupon(req, res, next) {
   }
 }
 
-/**
- * listCoupons
- * Return all coupons for display on admin UI.
- */
 async function listCoupons(req, res, next) {
   try {
     const coupons = await model.getAllCoupons();
@@ -59,21 +47,10 @@ async function listCoupons(req, res, next) {
   }
 }
 
-/**
- * Helper: computeCartValue
- * Sum unitPrice * quantity for all items.
- */
 function computeCartValue(cart) {
   return cart.items.reduce((sum, it) => sum + (Number(it.unitPrice) * Number(it.quantity)), 0);
 }
 
-/**
- * Helper: checkEligibility
- * Evaluate eligibility JSON against the user and cart.
- * Return { ok: true } or { ok: false, reason: '...' }.
- *
- * Keep checks defensive and simple so business logic is easy to reason about.
- */
 function checkEligibility(eligibility, user, cart) {
   if (!eligibility || Object.keys(eligibility).length === 0) return { ok: true };
 
@@ -122,11 +99,6 @@ function checkEligibility(eligibility, user, cart) {
   return { ok: true };
 }
 
-/**
- * computeDiscountForCoupon
- * Given coupon DB row and cartValue, calculate the discount amount.
- * For percent coupons, cap by max_discount_amount if provided.
- */
 function computeDiscountForCoupon(couponRow, cartValue) {
   if (couponRow.discount_type === 'FLAT') {
     return Number(couponRow.discount_value);
@@ -140,11 +112,6 @@ function computeDiscountForCoupon(couponRow, cartValue) {
   return discount;
 }
 
-/**
- * bestCoupon
- * Validate request, load coupons, filter and compute discounts,
- * apply deterministic tie-breakers and return the winner.
- */
 async function bestCoupon(req, res, next) {
   try {
     // Validate input payload
@@ -160,10 +127,9 @@ async function bestCoupon(req, res, next) {
 
     const candidates = [];
 
-    // Evaluate coupons one-by-one. We continue on errors so one bad coupon doesn't fail the request.
+    // Evaluate coupons one-by-one. 
     for (const c of coupons) {
       try {
-        // Date check: coupon must be active now
         const start = new Date(c.start_date);
         const end = new Date(c.end_date);
         if (start > now || end < now) continue;
@@ -191,7 +157,6 @@ async function bestCoupon(req, res, next) {
           discount: Number(discount)
         });
       } catch (innerErr) {
-        // Log and skip problematic coupon rows
         console.error('Error evaluating coupon', c.code, innerErr);
         continue;
       }
@@ -202,10 +167,6 @@ async function bestCoupon(req, res, next) {
       return res.json({ bestCoupon: null, discount: 0 });
     }
 
-    // Sort according to rules:
-    // 1) Highest discount
-    // 2) If tie -> earliest end_date
-    // 3) If still tie -> lexicographically smaller code
     candidates.sort((a, b) => {
       if (b.discount !== a.discount) return b.discount - a.discount;
       const aEnd = new Date(a.coupon.end_date), bEnd = new Date(b.coupon.end_date);
@@ -234,11 +195,6 @@ async function bestCoupon(req, res, next) {
   }
 }
 
-/**
- * markCouponUsed
- * Small helper for demo flows: increment usage for a user/coupon.
- * Useful to test usage limits.
- */
 async function markCouponUsed(req, res, next) {
   try {
     const { code } = req.params;
