@@ -9,7 +9,6 @@ async function request(path, opts = {}) {
   };
 
   try {
-    // Helper to run a single fetch attempt and parse response
     async function doFetch(targetUrl) {
       const res = await fetch(targetUrl, options);
       const text = await res.text();
@@ -55,7 +54,7 @@ async function apiGet(path) {
   return request(path, { method: 'GET' });
 }
 
-/* POST helper, body will be JSON-stringified */
+/* POST helper */
 async function apiPost(path, body) {
   return request(path, { method: 'POST', body: JSON.stringify(body) });
 }
