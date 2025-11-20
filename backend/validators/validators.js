@@ -1,9 +1,6 @@
-// validators/validators.js
-// Joi schemas for request validation. This keeps controller code readable.
-
 const Joi = require('joi');
 
-// Eligibility schema (all fields optional)
+// Eligibility schema 
 const eligibilitySchema = Joi.object({
   allowedUserTiers: Joi.array().items(Joi.string()).optional(),
   minLifetimeSpend: Joi.number().min(0).optional(),
