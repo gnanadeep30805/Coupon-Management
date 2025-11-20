@@ -1,5 +1,4 @@
-
-/* Base / reset-like rules */
+/* Base */
 :root{
     --bg: #f6f7f9;
     --card: #ffffff;
@@ -237,5 +236,79 @@
       display:flex; 
       gap:8px; 
       align-items:center; 
+  }
+
+  .user-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    border: 1px solid rgba(17,24,39,0.08);
+    border-radius: 999px;
+    background: #fff;
+  }
+
+  .avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2b6ef6, #0b8a5f);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  /* Auth pages */
+  .auth-body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(125deg, #eff3ff, #fef4f2);
+    padding: 24px;
+  }
+
+  .auth-container {
+    width: min(430px, 100%);
+  }
+
+  .auth-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 32px;
+    box-shadow: 0 24px 60px rgba(15, 40, 75, 0.12);
+    border: 1px solid rgba(31,111,235,0.08);
+  }
+
+  .auth-header {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .full-width {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .demo-card {
+    margin-top: 18px;
+    padding: 14px;
+    border-radius: 10px;
+    background: #f8fbff;
+    border: 1px dashed rgba(31,111,235,0.3);
+    font-size: 13px;
+    color: #0f172a;
+    line-height: 1.5;
   }
   
