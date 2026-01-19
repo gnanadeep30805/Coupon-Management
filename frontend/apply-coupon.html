@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Apply Coupon — Test</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- Backend API base defaults to localhost in api.js; add a meta tag only when tunneling -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">
+        <div class="logo">CP</div>
+        <div>
+          <div class="title">Apply Coupon</div>
+          <div class="subtitle">Test best-coupon evaluation</div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="user-chip">
+          <div class="avatar" id="userAvatar">CP</div>
+          <div class="col">
+            <strong id="currentUserName">Admin</strong>
+            <span id="currentUserEmail" class="hint" style="font-size:12px;"></span>
+          </div>
+        </div>
+        <button id="logoutBtn" class="btn btn-ghost small" type="button">Logout</button>
+        <a class="btn btn-ghost small" href="create-coupon.html">Create</a>
+        <a class="btn btn-ghost small" href="list-coupons.html">List</a>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3 style="margin-top:0">User & Cart</h3>
+        <form id="applyForm">
+          <div class="form-row">
+            <div class="field">
+              <label>User ID</label>
+              <input id="userId" type="text" value="demo-user-1" />
+            </div>
+            <div class="field">
+              <label>User Tier</label>
+              <input id="userTier" type="text" value="NEW" />
+            </div>
+            <div class="field">
+              <label>Country</label>
+              <input id="country" type="text" value="IN" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label>Lifetime Spend</label>
+              <input id="lifetimeSpend" type="number" value="0" />
+            </div>
+            <div class="field">
+              <label>Orders Placed</label>
+              <input id="ordersPlaced" type="number" value="0" />
+            </div>
+            <div class="field"></div>
+          </div>
+
+          <div class="field">
+            <label>Cart (JSON)</label>
+            <textarea id="cart" class="pre"></textarea>
+            <div class="note">Example: {"items":[{"productId":"p1","category":"electronics","unitPrice":1500,"quantity":1}]}</div>
+          </div>
+
+          <div class="row">
+            <button class="btn btn-primary" type="submit">Find Best Coupon</button>
+            <button id="fillExample" class="btn small" type="button">Fill Example Cart</button>
+          </div>
+        </form>
+
+        <div id="result" style="margin-top:12px"></div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0">How it works</h3>
+        <ol>
+          <li>We send your user object and cart to POST <code>/api/coupons/best</code>.</li>
+          <li>Backend filters coupons by date, eligibility and usage.</li>
+          <li>It computes discount for each eligible coupon and returns the best one.</li>
+        </ol>
+        <p class="note">If "Best Coupon" is null, none applied.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="api.js"></script>
+  <script>
+    window.authStore.requireAuth('index.html');
+    const currentUser = window.authStore.getCurrentUser();
+    if (currentUser) {
+      document.getElementById('currentUserName').textContent = currentUser.name || 'Authenticated user';
+      document.getElementById('currentUserEmail').textContent = currentUser.email || '';
+      document.getElementById('userAvatar').textContent = (currentUser.name || currentUser.email || 'CP').slice(0, 2).toUpperCase();
+    }
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      window.authStore.logout();
+      window.location.href = 'index.html';
+    });
+
+    // apply-coupon.js (inline)
+    const form = document.getElementById('applyForm');
+    const resultDiv = document.getElementById('result');
+    const cartEl = document.getElementById('cart');
+    const fillExampleBtn = document.getElementById('fillExample');
+
+    // default example cart
+    const exampleCart = {
+      items: [
+        { productId: 'p1', category: 'electronics', unitPrice: 1500, quantity: 1 },
+        { productId: 'p2', category: 'fashion', unitPrice: 500, quantity: 2 }
+      ]
+    };
+    cartEl.value = JSON.stringify(exampleCart, null, 2);
+
+    function showResult(success, content) {
+      resultDiv.innerHTML = '';
+      const div = document.createElement('div');
+      if (!success) {
+        div.className = 'message error';
+        div.textContent = content;
+      } else {
+        div.className = 'card';
+        div.innerHTML = `
+          <div style="font-weight:600;margin-bottom:8px">Result</div>
+          <div><strong>Best Coupon:</strong> ${content.bestCoupon ? content.bestCoupon.code : 'None'}</div>
+          <div><strong>Discount:</strong> ${content.discount}</div>
+          <pre class="pre">${JSON.stringify(content.bestCoupon, null, 2)}</pre>
+        `;
+      }
+      resultDiv.appendChild(div);
+    }
+
+    fillExampleBtn.addEventListener('click', () => {
+      cartEl.value = JSON.stringify(exampleCart, null, 2);
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      resultDiv.innerHTML = '';
+
+      // Build payload
+      const payload = {
+        user: {
+          userId: document.getElementById('userId').value.trim() || 'demo-user-1',
+          userTier: document.getElementById('userTier').value.trim() || 'NEW',
+          country: document.getElementById('country').value.trim() || 'IN',
+          lifetimeSpend: Number(document.getElementById('lifetimeSpend').value) || 0,
+          ordersPlaced: Number(document.getElementById('ordersPlaced').value) || 0
+        }
+      };
+
+      // parse cart JSON
+      let cart;
+      try {
+        cart = JSON.parse(cartEl.value);
+        if (!cart.items || !Array.isArray(cart.items)) {
+          return showResult(false, 'Cart JSON must have an "items" array.');
+        }
+      } catch (err) {
+        return showResult(false, 'Cart JSON is invalid.');
+      }
+      payload.cart = cart;
+
+      // call API
+      try {
+        const res = await window.api.apiPost('/coupons/best', payload);
+        showResult(true, res);
+      } catch (err) {
+        showResult(false, err.message || 'Failed to call API.');
+      }
+    });
+  </script>
+</body>
+</html>

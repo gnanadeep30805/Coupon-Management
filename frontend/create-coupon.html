@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Create Coupon — Admin</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- Backend API base defaults to localhost in api.js; add a meta tag only when tunneling -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">
+        <div class="logo">CP</div>
+        <div>
+          <div class="title">Coupon Admin</div>
+          <div class="subtitle">Create coupons and set eligibility</div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="user-chip">
+          <div class="avatar" id="userAvatar">AD</div>
+          <div class="col">
+            <strong id="currentUserName">Admin</strong>
+            <span id="currentUserEmail" class="hint" style="font-size:12px;"></span>
+          </div>
+        </div>
+        <button id="logoutBtn" class="btn btn-ghost small" type="button">Logout</button>
+        <a class="btn btn-ghost small" href="list-coupons.html">View Coupons</a>
+        <a class="btn btn-ghost small" href="apply-coupon.html">Test Apply</a>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3 style="margin-top:0">Create Coupon</h3>
+        <p class="hint">Fill the form below. Eligibility accepts JSON (see example).</p>
+
+        <div id="message" style="margin-bottom:12px"></div>
+
+        <form id="couponForm">
+          <div class="form-row">
+            <div class="field">
+              <label>Code</label>
+              <input id="code" type="text" placeholder="e.g. WELCOME100" required />
+            </div>
+            <div class="field">
+              <label>Discount Type</label>
+              <select id="discountType">
+                <option value="FLAT">FLAT</option>
+                <option value="PERCENT">PERCENT</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Discount Value</label>
+              <input id="discountValue" type="number" placeholder="100 or 10" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label>Max Discount (optional)</label>
+              <input id="maxDiscount" type="number" placeholder="Max for PERCENT (optional)" />
+            </div>
+            <div class="field">
+              <label>Usage Limit Per User (optional)</label>
+              <input id="usageLimit" type="number" min="1" placeholder="e.g. 1" />
+            </div>
+            <div class="field">
+              <label>Start Date</label>
+              <input id="startDate" type="datetime-local" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label>End Date</label>
+              <input id="endDate" type="datetime-local" required />
+            </div>
+            <div class="field">
+              <label>Description</label>
+              <input id="description" type="text" placeholder="Short description (optional)" />
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <div style="display:flex; gap:8px;">
+                <button class="btn btn-primary" type="submit">Create Coupon</button>
+                <button id="resetBtn" class="btn small" type="button">Reset</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Eligibility (JSON)</label>
+            <textarea id="eligibility" class="pre" placeholder='{"allowedUserTiers":["NEW"], "minCartValue":500}'></textarea>
+            <div class="note">Leave empty or {} for no eligibility rules.</div>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0">Example Eligibility</h3>
+        <div class="pre">
+{
+  "allowedUserTiers": ["NEW", "REGULAR"],
+  "minCartValue": 500,
+  "applicableCategories": ["electronics"],
+  "firstOrderOnly": false
+}
+        </div>
+        <p class="note">Tip: For quick testing use dates that include today. Use the "View Coupons" page to verify.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="api.js"></script>
+  <script>
+    // create-coupon.js (inline for simplicity)
+    // Human-friendly, defensive JS with helpful messages.
+
+    window.authStore.requireAuth('index.html');
+    const currentUser = window.authStore.getCurrentUser();
+
+    if (currentUser) {
+      document.getElementById('currentUserName').textContent = currentUser.name || 'Authenticated user';
+      document.getElementById('currentUserEmail').textContent = currentUser.email || '';
+      document.getElementById('userAvatar').textContent = (currentUser.name || currentUser.email || 'CP').slice(0, 2).toUpperCase();
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      window.authStore.logout();
+      window.location.href = 'index.html';
+    });
+
+    const form = document.getElementById('couponForm');
+    const message = document.getElementById('message');
+    const resetBtn = document.getElementById('resetBtn');
+
+    function showMessage(type, text) {
+      message.innerHTML = '';
+      const div = document.createElement('div');
+      div.className = `message ${type === 'error' ? 'error' : 'success'}`;
+      div.textContent = text;
+      message.appendChild(div);
+      // auto-hide success after 4s
+      if (type === 'success') setTimeout(() => { message.innerHTML = ''; }, 4000);
+    }
+
+    resetBtn.addEventListener('click', () => {
+      form.reset();
+      document.getElementById('eligibility').value = '{"allowedUserTiers":["NEW"],"minCartValue":100}';
+      message.innerHTML = '';
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      message.innerHTML = '';
+
+      // Read form fields
+      const payload = {
+        code: document.getElementById('code').value.trim(),
+        description: document.getElementById('description').value.trim(),
+        discountType: document.getElementById('discountType').value,
+        discountValue: Number(document.getElementById('discountValue').value),
+        maxDiscountAmount: document.getElementById('maxDiscount').value ? Number(document.getElementById('maxDiscount').value) : null,
+        startDate: document.getElementById('startDate').value,
+        endDate: document.getElementById('endDate').value,
+        usageLimitPerUser: document.getElementById('usageLimit').value ? Number(document.getElementById('usageLimit').value) : null
+      };
+
+      // Basic client-side validation
+      if (!payload.code) return showMessage('error','Coupon code is required.');
+      if (!payload.discountValue || payload.discountValue <= 0) return showMessage('error','Discount value must be > 0.');
+      if (!payload.startDate || !payload.endDate) return showMessage('error','Start and end dates are required.');
+
+      // parse eligibility JSON with user-friendly error messages
+      const eligibilityText = document.getElementById('eligibility').value.trim();
+      try {
+        payload.eligibility = eligibilityText ? JSON.parse(eligibilityText) : {};
+      } catch (err) {
+        return showMessage('error','Eligibility must be valid JSON. Example: {"minCartValue":500}');
+      }
+
+      // call backend
+      try {
+        const res = await window.api.apiPost('/coupons', payload);
+        showMessage('success', `Coupon ${res.coupon.code} created successfully.`);
+        form.reset();
+      } catch (err) {
+        showMessage('error', err.message || 'Failed to create coupon');
+      }
+    });
+
+    // Initialize eligibility sample
+    document.getElementById('eligibility').value = '{"allowedUserTiers":["NEW"],"minCartValue":100}';
+  </script>
+</body>
+</html>

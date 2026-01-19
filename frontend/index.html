@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Coupon Admin — Login</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="auth-body">
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="logo">CP</div>
+        <div>
+          <div class="title">Welcome back</div>
+          <p class="subtitle">Sign in to manage coupons</p>
+        </div>
+      </div>
+
+      <div id="loginMessage"></div>
+
+      <form id="loginForm" class="auth-form">
+        <div class="field">
+          <label>Email</label>
+          <input id="loginEmail" type="email" placeholder="admin@coupon.io" required />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input id="loginPassword" type="password" placeholder="Enter your password" required />
+        </div>
+        <button class="btn btn-primary full-width" type="submit">Login</button>
+      </form>
+
+      <p class="note" style="text-align:center;margin-top:16px;">
+        New here? <a href="signup.html">Create an account</a>
+      </p>
+
+      <div class="demo-card">
+        <strong>Demo credentials</strong>
+        <p>Email: admin@coupon.io</p>
+        <p>Password: admin123</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const loginMessage = document.getElementById('loginMessage');
+
+    function showLoginMessage(type, text) {
+      loginMessage.innerHTML = '';
+      const div = document.createElement('div');
+      div.className = `message ${type === 'error' ? 'error' : 'success'}`;
+      div.textContent = text;
+      loginMessage.appendChild(div);
+    }
+
+    loginForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      loginMessage.innerHTML = '';
+
+      try {
+        const user = window.authStore.login({
+          email: document.getElementById('loginEmail').value,
+          password: document.getElementById('loginPassword').value
+        });
+
+        showLoginMessage('success', `Welcome ${user.name || user.email}! Redirecting...`);
+        setTimeout(() => { window.location.href = 'create-coupon.html'; }, 900);
+      } catch (err) {
+        showLoginMessage('error', err.message || 'Unable to login');
+      }
+    });
+  </script>
+</body>
+</html>
+
+
