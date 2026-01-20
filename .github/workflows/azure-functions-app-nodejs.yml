@@ -35,10 +35,20 @@ jobs:
           npm run build --if-present
           zip -r ../backend.zip .
 
+      - name: 🔎 Validate Azure deployment secrets
+        run: |
+          if [ -z "${{ secrets.AZURE_FUNCTIONAPP_NAME }}" ]; then
+            echo "ERROR: AZURE_FUNCTIONAPP_NAME secret is not set. Set it in Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+          if [ -z "${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}" ]; then
+            echo "ERROR: AZURE_FUNCTIONAPP_PUBLISH_PROFILE secret is not set. Set it in Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
       - name: 🚀 Deploy to Azure Function App
         uses: Azure/functions-action@v1
         with:
           app-name: ${{ secrets.AZURE_FUNCTIONAPP_NAME }}
           package: backend.zip
           publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
-
