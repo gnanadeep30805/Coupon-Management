@@ -1,0 +1,13 @@
+{
+  "name": "coupon-management-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for Coupon Management System",
+  "private": true,
+  "scripts": {
+    "dev": "http-server . -p 3000 -c-1"
+  },
+  "dependencies": {
+    "@vercel/speed-insights": "^1.3.1"
+  },
+  "devDependencies": {}
+}
