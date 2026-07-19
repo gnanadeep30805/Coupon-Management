@@ -1,4 +1,4 @@
-# 🎟️ Coupon Management System
+# Coupon Management System
 
 <div align="center">
 
@@ -10,7 +10,7 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-Authentication-orange?style=for-the-badge)
 
-# 🎉 Coupon Management System
+# Coupon Management System
 
 ### Smart Coupon Distribution & Management Platform
 
