@@ -1,124 +1,352 @@
-# 📘 Coupon Management System — README
+# 🎟️ Coupon Management System
 
-## 📌 1. Project Overview
+<div align="center">
 
-The Coupon Management System is a full-stack web application that allows administrators to create, store, and manage discount coupons, while user carts can be evaluated to find the best available discount. It demonstrates:
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-Database-47A248?style=for-the-badge&logo=mongodb)
+![JWT](https://img.shields.io/badge/JWT-Authentication-orange?style=for-the-badge)
 
-- A responsive admin UI with login/signup, coupon creation, listing, and coupon-application tester
-- A Node/Express REST API with validation, business rules, and usage tracking
-- PostgreSQL persistence (or an opt-in mock DB for demos/tests)
+# 🎉 Coupon Management System
 
-For a high-level system map, see [`ARCHITECTURE.md`](ARCHITECTURE.md).
+### Smart Coupon Distribution & Management Platform
 
----
+**Create • Manage • Redeem • Track**
 
-## 🧩 2. Key Features
-
-- **Authentication (frontend demo)**: Login & signup pages with localStorage persistence and route guarding.
-- **Coupon CRUD**: Create coupons with discount types, eligibility JSON, usage limits, and validity windows.
-- **Listing & Usage Simulation**: Paginated-style list with JSON previews and “Mark Used” demo action.
-- **Apply Best Coupon**: Interactive tester that posts user/cart payloads to `/api/coupons/best`.
-- **Robust Validation**: Joi validators and controller-level error handling.
-- **Flexible Data Layer**: Real PostgreSQL connection or `USE_MOCK_DB=true` in-memory store.
+</div>
 
 ---
 
-## 🧰 3. Tech Stack
+# 📖 Overview
 
-| Layer      | Tools                                |
-|-----------|---------------------------------------|
-| Frontend  | HTML5, CSS3, Vanilla JS (`frontend/`) |
-| Backend   | Node.js, Express.js, Joi (`backend/`) |
-| Database  | PostgreSQL (`schema.sql`)             |
-| Tooling   | npm, Postman, localtunnel (optional)  |
+The **Coupon Management System** is a full-stack web application that enables businesses to efficiently create, distribute, manage, and monitor digital coupons. The platform provides secure coupon generation, redemption tracking, and analytics while ensuring that coupons are redeemed only by eligible users.
+
+The system simplifies promotional campaigns by automating coupon management, reducing manual effort, and preventing coupon misuse.
 
 ---
 
-## 🚀 4. Getting Started
+# 🎯 Objectives
 
-### ⚙️ Prerequisites
-
-| Tool        | Version |
-|-------------|---------|
-| Node.js     | 18+     |
-| npm         | 9+      |
-| PostgreSQL* | 14+     |
-| Git         | Latest  |
-
-\* Skip if you use the mock DB.
-
-### 🔧 Setup Summary
-
-1. **Backend**
-   ```powershell
-   cd "d:\web dev\coupon-system\backend"
-   npm install
-   ```
-   - Create `.env` (see below).
-   - Start: `npm start` (default port `4000`).
-
-2. **Frontend**
-   ```powershell
-   cd "d:\web dev\coupon-system"
-   npx http-server frontend -p 3000
-   ```
-   - Open `http://localhost:3000/index.html`.
-
-3. **Environment (.env example)**
-   ```
-   DATABASE_URL=postgresql://postgres:password@localhost:5432/couponsdb
-   USE_MOCK_DB=true          # optional; skips Postgres
-   PORT=4000
-   ```
-
-4. **Expose for preview (optional)**
-   ```
-   npx localtunnel --port 3000   # frontend
-   npx localtunnel --port 4000   # backend
-   ```
-
-Detailed setup, sample API calls, and troubleshooting tips live in [`RUN_INSTRUCTIONS.md`](RUN_INSTRUCTIONS.md).
+- Digitize coupon management
+- Eliminate duplicate coupon redemption
+- Provide secure coupon validation
+- Manage promotional campaigns efficiently
+- Track coupon usage and redemption history
+- Generate insights through analytics
+- Improve customer engagement
 
 ---
 
-## 🧪 5. Useful Endpoints
+# ✨ Features
 
-| Method | Endpoint                 | Description                    |
-|--------|--------------------------|--------------------------------|
-| GET    | `/api/health`            | Health check                  |
-| GET    | `/api/coupons`           | List coupons                  |
-| POST   | `/api/coupons`           | Create a coupon               |
-| POST   | `/api/coupons/best`      | Evaluate best coupon for cart |
-| POST   | `/api/coupons/use/:code` | Mark a coupon usage           |
+## 👨‍💼 Admin Module
 
-Refer to `backend/controllers/couponsController.js` for the full flow and payload shapes.
+- Secure Login
+- Dashboard
+- Create Coupons
+- Edit Coupons
+- Delete Coupons
+- Activate/Deactivate Coupons
+- Set Coupon Validity
+- Configure Discount Rules
+- Monitor Coupon Usage
+- View Analytics
+- Manage Users
 
 ---
 
-## 🗂 6. Project Structure
+## 👤 User Module
 
+- User Registration
+- Secure Login
+- Browse Available Coupons
+- Redeem Coupons
+- View Redemption History
+- Profile Management
+- Notification Support
+
+---
+
+## 🎟 Coupon Management
+
+- Generate Unique Coupon Codes
+- Percentage Discounts
+- Flat Discounts
+- Expiry Date Management
+- Limited Usage Coupons
+- One-Time Coupons
+- Public & Private Coupons
+
+---
+
+## 📊 Dashboard
+
+Monitor important statistics:
+
+- Total Coupons
+- Active Coupons
+- Expired Coupons
+- Redeemed Coupons
+- Registered Users
+- Campaign Performance
+- Redemption Analytics
+
+---
+
+## 🔐 Authentication & Security
+
+- JWT Authentication
+- Password Encryption (bcrypt)
+- Protected Routes
+- Role-Based Access
+- Secure API Endpoints
+
+---
+
+# 🏗️ System Architecture
+
+```text
+             React Frontend
+                    │
+                    ▼
+             Express REST API
+                    │
+          ┌─────────┴─────────┐
+          ▼                   ▼
+      MongoDB Database   JWT Authentication
 ```
-coupon-system/
-├── frontend/          # Login/Signup, admin pages, styles, API helper
-├── backend/           # Express server, routes, controllers, models
-├── schema.sql         # Database schema
-├── ARCHITECTURE.md    # Mermaid diagram & flow description
-├── RUN_INSTRUCTIONS.md# Detailed setup + curl samples
-└── README.md          # You are here
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
+
+- React.js
+- HTML5
+- CSS3
+- JavaScript (ES6+)
+- Bootstrap / Tailwind CSS
+- Axios
+
+---
+
+## Backend
+
+- Node.js
+- Express.js
+
+---
+
+## Database
+
+- MongoDB
+- Mongoose
+
+---
+
+## Authentication
+
+- JWT
+- bcrypt
+
+---
+
+## Development Tools
+
+- Visual Studio Code
+- Postman
+- Git
+- GitHub
+- MongoDB Compass
+
+---
+
+# 📂 Project Structure
+
+```text
+Coupon-Management/
+
+│
+├── client/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── assets/
+│   │   └── utils/
+│
+├── server/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── services/
+│   └── utils/
+│
+├── screenshots/
+├── docs/
+└── README.md
 ```
 
 ---
 
-## 🤝 7. Contributing
+# 🚀 Installation
 
-1. Fork & clone the repo.
-2. Create a feature branch.
-3. Follow the run instructions to verify frontend/backend locally.
-4. Open a PR with a summary of changes, screenshots (frontend), and test notes.
+## Clone Repository
+
+```bash
+git clone https://github.com/gnanadeep30805/Coupon-Management.git
+```
+
+Navigate to the project
+
+```bash
+cd Coupon-Management
+```
+
+Install frontend dependencies
+
+```bash
+cd client
+npm install
+```
+
+Install backend dependencies
+
+```bash
+cd ../server
+npm install
+```
 
 ---
 
-## 📄 8. License
+## Configure Environment Variables
 
-MIT – customize as needed for your deployment.
+Create a `.env` file inside the server folder.
 
+```env
+PORT=5000
+
+MONGODB_URI=your_mongodb_connection_string
+
+JWT_SECRET=your_secret_key
+```
+
+---
+
+## Start Backend
+
+```bash
+npm run dev
+```
+
+---
+
+## Start Frontend
+
+```bash
+npm start
+```
+
+---
+
+# 📸 Screenshots
+
+Add screenshots for:
+
+- Home Page
+- Login Page
+- Admin Dashboard
+- Coupon Management
+- User Dashboard
+- Coupon Redemption
+- Analytics Dashboard
+
+---
+
+# 🚀 Future Enhancements
+
+- QR Code Coupons
+- Email Coupon Distribution
+- SMS Notifications
+- Referral Coupons
+- Loyalty Rewards
+- Multi-Vendor Support
+- AI-Based Personalized Coupons
+- Mobile Application
+- Payment Gateway Integration
+- Coupon Fraud Detection
+
+---
+
+# 📊 Project Highlights
+
+- 🎟 Secure Coupon Generation
+- 🔐 JWT Authentication
+- 📈 Coupon Analytics
+- 📊 Admin Dashboard
+- 👤 User Dashboard
+- 🗄 MongoDB Integration
+- ⚡ RESTful APIs
+- 📱 Responsive Design
+- 🔒 Role-Based Access Control
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repository
+2. Create a feature branch
+
+```bash
+git checkout -b feature-name
+```
+
+3. Commit your changes
+
+```bash
+git commit -m "Add new feature"
+```
+
+4. Push to GitHub
+
+```bash
+git push origin feature-name
+```
+
+5. Open a Pull Request
+
+---
+
+# ⭐ Support
+
+If you found this project useful, please consider giving it a **⭐ Star** on GitHub.
+
+It helps others discover the project and motivates further development.
+
+---
+
+# 👨‍💻 Author
+
+**Gnana Deep**
+
+🎓 Computer Science Student  
+💻 Full Stack Developer  
+🚀 MERN Stack Enthusiast
+
+---
+
+<div align="center">
+
+## 🎉 Simplifying Digital Coupon Management
+
+**A secure and scalable MERN Stack application for creating, managing, and tracking promotional coupons with ease.**
+
+Made with ❤️ using React.js, Node.js, Express.js & MongoDB
+
+</div>
